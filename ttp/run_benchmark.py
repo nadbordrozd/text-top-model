@@ -6,5 +6,6 @@ TRAIN_SET_PATH = '../data/r8-all-terms.txt'
 
 models = [MultNB(), BernNB(), SVM()]
 
-for model in models:
-    print str(model), benchmark(model, TRAIN_SET_PATH)
+if __name__ == '__main__':
+    for model in models:
+        print str(model), benchmark(model, TRAIN_SET_PATH)

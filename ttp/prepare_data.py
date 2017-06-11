@@ -28,5 +28,5 @@ def prepare_dataset(path):
     labels = label_encoder.fit_transform(y)
     vocab = list({w for text in X for w in text})
     token_encoder.fit(vocab)
-    X = np.array([token_encoder.transform(tokens) for tokens in X])
+    X = np.array([list(token_encoder.transform(tokens)) for tokens in X])
     return X, labels, token_encoder, label_encoder
