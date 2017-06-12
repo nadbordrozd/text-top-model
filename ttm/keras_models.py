@@ -4,38 +4,41 @@ from keras.layers import Dense, Dropout, Activation
 from keras.preprocessing.text import Tokenizer
 
 
-class KerasExample(object):
+class BasicNN(object):
 
-    def __init__(self):
+    def __init__(self, layers=1, units=512, dropout_rate=0.5, epochs=5, batch_size=128):
+        self.layers = layers
+        self.units = units
+        self.dropout_rate = dropout_rate
+        self.epochs = epochs
+        self.batch_size = batch_size
+        self.max_words = 1000
+        self.tokenizer = Tokenizer(num_words=self.max_words)
+
         self.vocab_size = None
         self.num_classes = None
         self.model = None
-
-        self.max_words = 1000
-        self.tokenizer = Tokenizer(num_words=self.max_words)
 
     def set_vocab_size(self, n):
         self.vocab_size = n
 
     def set_class_count(self, n):
-        self.class_count = n
+        self.num_classes = n
 
     def fit(self, X, y):
-        if self.vocab_size is None or self.class_count is None:
+        if self.vocab_size is None or self.num_classes is None:
             raise ValueError(
                 "Must set vocab size and class count before training")
 
         X = self.tokenizer.sequences_to_matrix(X, mode='binary')
-        y = keras.utils.to_categorical(y, self.class_count)
-
-        batch_size = 32
-        epochs = 5
+        y = keras.utils.to_categorical(y, self.num_classes)
 
         model = Sequential()
-        model.add(Dense(512, input_shape=(self.max_words,)))
-        model.add(Activation('relu'))
-        model.add(Dropout(0.5))
-        model.add(Dense(self.class_count))
+        for _ in range(self.layers):
+            model.add(Dense(self.units, input_shape=(self.max_words,)))
+            model.add(Activation('relu'))
+            model.add(Dropout(self.dropout_rate))
+        model.add(Dense(self.num_classes))
         model.add(Activation('softmax'))
 
         model.compile(loss='categorical_crossentropy',
@@ -43,10 +46,9 @@ class KerasExample(object):
                       metrics=['accuracy'])
 
         self.history = model.fit(X, y,
-                                 batch_size=batch_size,
-                                 epochs=epochs,
-                                 verbose=1,
-                                 validation_split=0.1)
+                                 batch_size=self.batch_size,
+                                 epochs=self.epochs,
+                                 verbose=1)
         self.model = model
         return self
 
@@ -58,4 +60,5 @@ class KerasExample(object):
         return self.predict_proba(X).argmax(axis=1)
 
     def __str__(self):
-        return "KerasExample"
+        return "BasicNN(layers=%s, units=%s, dropout_rate=%s, epochs=%s, batch_size=%s)" % (
+            self.layers, self.units, self.dropout_rate, self.epochs, self.batch_size)
