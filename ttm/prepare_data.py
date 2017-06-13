@@ -10,6 +10,9 @@ def read_dataset(path):
     with open(path, "rb") as infile:
         for line in infile:
             label, text = line.split("\t")
+            text = text.strip()
+            if len(text) == 0:
+                continue
             # texts are already tokenized, just split on space
             # in a real case we would use e.g. spaCy for tokenization
             # and maybe remove stopwords etc.

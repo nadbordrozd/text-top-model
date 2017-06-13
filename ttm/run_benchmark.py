@@ -3,7 +3,12 @@ from keras_models import BasicNN
 from benchmarks import benchmark
 
 
-TRAIN_SET_PATH = '../data/r8-all-terms.txt'
+datasets = [
+    '../data/r8-all-terms.txt',
+    '../data/r52-all-terms.txt',
+    '../data/20ng-all-terms.txt',
+    '../data/webkb-stemmed.txt'
+]
 
 models = [
     BasicNN,
@@ -15,10 +20,13 @@ models = [
 ]
 
 if __name__ == '__main__':
-    for model_class in models:
-        params = {}
-        if type(model_class) == tuple:
-            model_class, params = model_class
+    for data_path in datasets:
+        print
+        print data_path
+        for model_class in models:
+            params = {}
+            if type(model_class) == tuple:
+                model_class, params = model_class
 
-        score = benchmark(model_class, TRAIN_SET_PATH, params)
-        print "%.3f" % score, model_class(**params)
+            score = benchmark(model_class, data_path, params)
+            print "%.3f" % score, model_class(**params)
