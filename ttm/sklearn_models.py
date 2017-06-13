@@ -5,75 +5,57 @@ from sklearn.svm import SVC
 from xgboost import XGBClassifier
 
 
+class SklearnClassifierWrapper(object):
+    def __init__(self, model, tfidf=False):
+        """
+        Classifier made up of a pipeline with a count vectorizer + given model
+        :param model: a sklearn-like classifier (with fit, predict and predict_proba)
+        :param tfidf: if True wil use TfidfVectorizer, otherwise CountVectorizer; defaults to False
+        """
+        if tfidf:
+            vectorizer_step = ('tfidf_vectorizer', TfidfVectorizer(analyzer=lambda x: x))
+        else:
+            vectorizer_step = ('count_vectorizer', CountVectorizer(analyzer=lambda x: x))
 
-
-class MultNB(object):
-    def __init__(self):
-        self.clf = Pipeline([("count_vectorizer", CountVectorizer(analyzer=lambda x: x)),
-                             ("multinomial nb", MultinomialNB())])
-
-    def fit(self, X, y):
-        self.clf.fit(X, y)
-        return self
-
-    def predict(self, X):
-        return self.clf.predict(X)
-
-    def __str__(self):
-        return "MultinomialNB"
-
-
-class BernNB(object):
-    def __init__(self):
-        self.clf = Pipeline([("count_vectorizer", CountVectorizer(analyzer=lambda x: x)),
-                             ("bernoulli nb", BernoulliNB())])
+        self.clf = Pipeline([
+            vectorizer_step,
+            ('model', model)])
+        self.name = "SklearnClassifierWrapper(tfidf=%s)" % tfidf
 
     def fit(self, X, y):
         self.clf.fit(X, y)
         return self
 
-    def predict(self, X):
-        return self.clf.predict(X)
-
-    def __str__(self):
-        return "BernoulliNB"
-
-
-class SVM(object):
-    def __init__(self):
-        self.clf = Pipeline([("count_vectorizer", CountVectorizer(analyzer=lambda x: x)),
-                             ("SVC", SVC())])
-
-    def fit(self, X, y):
-        self.clf.fit(X, y)
-        return self
+    def predict_proba(self, X):
+        return self.clf.predict_proba(X)
 
     def predict(self, X):
         return self.clf.predict(X)
 
     def __str__(self):
-        return "SVM"
+        return self.name
 
 
-class XGB(object):
-    def __init__(self):
-        self.vectorizer = CountVectorizer(analyzer=lambda x: x)
-        self.clf = XGBClassifier()
-
-    def set_vocab_size(self, n):
-        self.vectorizer.fit([range(n)])
-        return self
-
-    def fit(self, X, y):
-        self.clf.fit(self.vectorizer.transform(X), y)
-        return self
-
-    def predict(self, X):
-        return self.clf.predict(self.vectorizer.transform(X))
+class MultNB(SklearnClassifierWrapper):
+    def __init__(self, tfidf=False):
+        super(MultNB, self).__init__(MultinomialNB(), tfidf)
+        self.name = "MultinomialNB(tfidf=%s)" % tfidf
 
 
-    def __str__(self):
-        return "XGBoost"
+class BernNB(SklearnClassifierWrapper):
+    def __init__(self, tfidf=False):
+        super(BernNB, self).__init__(BernoulliNB(), tfidf)
+        self.name = "BernoulliNB(tfidf=%s)" % tfidf
 
 
+class SVM(SklearnClassifierWrapper):
+    def __init__(self, tfidf=False):
+        super(SVM, self).__init__(SVC(), tfidf)
+        self.name = "SVC(tfidf=%s)" % tfidf
+
+
+class XGB(SklearnClassifierWrapper):
+    def __init__(self, tfidf=False):
+        super(XGB, self).__init__(XGBClassifier(), tfidf)
+        self.name = "XGBClassifier(tfidf=%s)" % tfidf
 
