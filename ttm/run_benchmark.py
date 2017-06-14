@@ -7,6 +7,15 @@ datasets = [
     '../data/r8-all-terms.txt',
     '../data/r52-all-terms.txt',
     '../data/20ng-all-terms.txt',
+    '../data/r8-no-short.txt',
+    '../data/r52-no-short.txt',
+    '../data/20ng-no-short.txt',
+    '../data/r8-no-stop.txt',
+    '../data/r52-no-stop.txt',
+    '../data/20ng-no-stop.txt',
+    '../data/r8-stemmed.txt',
+    '../data/r52-stemmed.txt',
+    '../data/20ng-stemmed.txt',
     '../data/webkb-stemmed.txt'
 ]
 
