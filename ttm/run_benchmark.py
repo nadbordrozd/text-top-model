@@ -25,7 +25,12 @@ models = [
     (BasicNN, {'layers': 3, 'units': 64}),
     MultNB,
     BernNB,
-    SVM
+    SVM,
+    (SVM, {'kernel': 'rbf'}),
+    (MultNB, {'tfidf': True}),
+    (BernNB, {'tfidf': True}),
+    (SVM, {'tfidf': True}),
+    (SVM, {'tfidf': True, 'kernel': 'rbf'})
 ]
 
 if __name__ == '__main__':

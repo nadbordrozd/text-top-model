@@ -49,9 +49,9 @@ class BernNB(SklearnClassifierWrapper):
 
 
 class SVM(SklearnClassifierWrapper):
-    def __init__(self, tfidf=False):
-        super(SVM, self).__init__(SVC(), tfidf)
-        self.name = "SVC(tfidf=%s)" % tfidf
+    def __init__(self, tfidf=False, kernel='linear'):
+        super(SVM, self).__init__(SVC(kernel=kernel), tfidf)
+        self.name = "SVC(tfidf=%s, kernel=%s)" % (tfidf, kernel)
 
 
 class XGB(SklearnClassifierWrapper):
