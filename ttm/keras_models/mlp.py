@@ -4,7 +4,7 @@ from keras.layers import Dense, Dropout, Activation
 from keras.preprocessing.text import Tokenizer
 
 
-class BasicNN(object):
+class MLP(object):
 
     def __init__(self, layers=1, units=512, dropout_rate=0.5, epochs=5, batch_size=128):
         self.layers = layers
@@ -60,5 +60,5 @@ class BasicNN(object):
         return self.predict_proba(X).argmax(axis=1)
 
     def __str__(self):
-        return "BasicNN(layers=%s, units=%s, dropout_rate=%s, epochs=%s, batch_size=%s)" % (
+        return "MLP(layers=%s, units=%s, dropout_rate=%s, epochs=%s, batch_size=%s)" % (
             self.layers, self.units, self.dropout_rate, self.epochs, self.batch_size)

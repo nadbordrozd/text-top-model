@@ -1,5 +1,7 @@
 from sklearn_models import MultNB, BernNB, SVM
-from keras_models import BasicNN
+from keras_models.cnn import FCholletCNN
+from keras_models.mlp import MLP
+from keras_models.lstm import LSTMClassifier
 from benchmarks import benchmark
 
 
@@ -20,17 +22,21 @@ datasets = [
 ]
 
 models = [
-    BasicNN,
-    (BasicNN, {'layers': 2}),
-    (BasicNN, {'layers': 3, 'units': 64}),
-    MultNB,
-    BernNB,
-    SVM,
-    (SVM, {'kernel': 'rbf'}),
+    (LSTMClassifier, {'layers': 1, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 256}),
+    (LSTMClassifier, {'layers': 2, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 128}),
+    (LSTMClassifier, {'layers': 3, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 128}),
+    (FCholletCNN, {'epochs': 20, 'dropout_rate': 0, 'embedding_dim': 10}),
+    (FCholletCNN, {'epochs': 20, 'dropout_rate': 0, 'embedding_dim': 20}),
+    (FCholletCNN, {'epochs': 20, 'dropout_rate': 0, 'embedding_dim': 50}),
+    (MLP, {'layers': 1, 'dropout_rate': 0.2, 'epochs': 10}),
+    (MLP, {'layers': 2, 'dropout_rate': 0.2, 'epochs': 10}),
+    (MLP, {'layers': 3, 'dropout_rate': 0.2, 'epochs': 10}),
     (MultNB, {'tfidf': True}),
     (BernNB, {'tfidf': True}),
-    (SVM, {'tfidf': True}),
-    (SVM, {'tfidf': True, 'kernel': 'rbf'})
+    (MultNB, {'tfidf': False}),
+    (BernNB, {'tfidf': False}),
+    (SVM, {'tfidf': True, 'kernel': 'linear'}),
+    (SVM, {'tfidf': False, 'kernel': 'linear'}),
 ]
 
 if __name__ == '__main__':
