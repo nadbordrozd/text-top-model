@@ -34,8 +34,11 @@ class MLP(object):
         y = keras.utils.to_categorical(y, self.num_classes)
 
         model = Sequential()
-        for _ in range(self.layers):
-            model.add(Dense(self.units, input_shape=(self.max_words,)))
+        for i in range(self.layers):
+            if i == 0:
+                model.add(Dense(self.units, input_shape=(self.max_words,)))
+            else:
+                model.add(Dense(self.units))
             model.add(Activation('relu'))
             model.add(Dropout(self.dropout_rate))
         model.add(Dense(self.num_classes))
