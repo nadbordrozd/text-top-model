@@ -2,6 +2,7 @@ from sklearn_models import MultNB, BernNB, SVM
 from keras_models.cnn import FCholletCNN
 from keras_models.mlp import MLP
 from keras_models.lstm import LSTMClassifier
+from tflearn_models import TFNN
 from benchmarks import benchmark
 
 
@@ -28,6 +29,9 @@ models = [
     (FCholletCNN, {'epochs': 20, 'dropout_rate': 0, 'embedding_dim': 10}),
     (FCholletCNN, {'epochs': 20, 'dropout_rate': 0, 'embedding_dim': 20}),
     (FCholletCNN, {'epochs': 20, 'dropout_rate': 0, 'embedding_dim': 50}),
+    (TFNN, {'layers': 1, 'units': 512, 'epochs': 20}),
+    (TFNN, {'layers': 2, 'units': 512, 'epochs': 20}),
+    (TFNN, {'layers': 4, 'units': 512, 'epochs': 20}),
     (MLP, {'layers': 1, 'dropout_rate': 0.2, 'epochs': 10}),
     (MLP, {'layers': 2, 'dropout_rate': 0.2, 'epochs': 10}),
     (MLP, {'layers': 3, 'dropout_rate': 0.2, 'epochs': 10}),
