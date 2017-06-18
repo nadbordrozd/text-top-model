@@ -6,21 +6,23 @@ from keras.preprocessing.text import Tokenizer
 
 class MLP(object):
 
-    def __init__(self, layers=1, units=512, dropout_rate=0.5, epochs=5, batch_size=128):
+    def __init__(self, layers=1, units=512, dropout_rate=0.5, max_vocab_size=10000, epochs=5,
+                                                                                  batch_size=128):
         self.layers = layers
         self.units = units
         self.dropout_rate = dropout_rate
         self.epochs = epochs
         self.batch_size = batch_size
-        self.max_words = 1000
-        self.tokenizer = Tokenizer(num_words=self.max_words)
 
+        self.max_vocab_size = max_vocab_size
+        self.tokenizer = None
         self.vocab_size = None
         self.num_classes = None
         self.model = None
 
     def set_vocab_size(self, n):
-        self.vocab_size = n
+        self.vocab_size = min(n, self.max_vocab_size)
+        self.tokenizer = Tokenizer(num_words=self.vocab_size)
 
     def set_class_count(self, n):
         self.num_classes = n
@@ -36,7 +38,7 @@ class MLP(object):
         model = Sequential()
         for i in range(self.layers):
             if i == 0:
-                model.add(Dense(self.units, input_shape=(self.max_words,)))
+                model.add(Dense(self.units, input_shape=(self.vocab_size,)))
             else:
                 model.add(Dense(self.units))
             model.add(Activation('relu'))
@@ -63,5 +65,7 @@ class MLP(object):
         return self.predict_proba(X).argmax(axis=1)
 
     def __str__(self):
-        return "MLP(layers=%s, units=%s, dropout_rate=%s, epochs=%s, batch_size=%s)" % (
-            self.layers, self.units, self.dropout_rate, self.epochs, self.batch_size)
+        return "MLP(layers=%s, units=%s, dropout_rate=%s, max_vocab_size=%s, epochs=%s, " \
+               "batch_size=%s)" % (
+            self.layers, self.units, self.dropout_rate, self.max_vocab_size, self.epochs,
+            self.batch_size)
