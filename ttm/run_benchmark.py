@@ -32,9 +32,9 @@ models = [
     (TFNN, {'layers': 1, 'units': 512, 'epochs': 20}),
     (TFNN, {'layers': 2, 'units': 512, 'epochs': 20}),
     (TFNN, {'layers': 4, 'units': 512, 'epochs': 20}),
-    (MLP, {'layers': 1, 'dropout_rate': 0.2, 'epochs': 10}),
-    (MLP, {'layers': 2, 'dropout_rate': 0.2, 'epochs': 10}),
-    (MLP, {'layers': 3, 'dropout_rate': 0.2, 'epochs': 10}),
+    (MLP, {'layers': 1, 'dropout_rate': 0.2, 'epochs': 20}),
+    (MLP, {'layers': 2, 'dropout_rate': 0.2, 'epochs': 20}),
+    (MLP, {'layers': 3, 'dropout_rate': 0.2, 'epochs': 20}),
     (MultNB, {'tfidf': True}),
     (BernNB, {'tfidf': True}),
     (MultNB, {'tfidf': False}),
@@ -42,6 +42,7 @@ models = [
     (SVM, {'tfidf': True, 'kernel': 'linear'}),
     (SVM, {'tfidf': False, 'kernel': 'linear'}),
 ]
+
 
 if __name__ == '__main__':
     for data_path in datasets:
