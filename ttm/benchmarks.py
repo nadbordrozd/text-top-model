@@ -15,8 +15,8 @@ def benchmark(model_class, data_path, model_params=None):
     if model_params is None:
         model_params = {}
     model = model_class(**model_params)
-    X, y, word_encoder, label_encoder = prepare_dataset(data_path)
-    vocab_size = len(word_encoder.classes_)
+    X, y, vocab, label_encoder = prepare_dataset(data_path)
+    vocab_size = len(vocab)
     class_count = len(label_encoder.classes_)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
