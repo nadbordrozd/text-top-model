@@ -36,11 +36,16 @@ models = [
     (MLP, {'layers': 2, 'dropout_rate': 0.2, 'epochs': 20}),
     (MLP, {'layers': 3, 'dropout_rate': 0.2, 'epochs': 20}),
     (MultNB, {'tfidf': True}),
+    (MultNB, {'tfidf': True, 'ngram_n': 2}),
+    (MultNB, {'tfidf': True, 'ngram_n': 3}),
     (BernNB, {'tfidf': True}),
     (MultNB, {'tfidf': False}),
+    (MultNB, {'tfidf': False, 'ngram_n': 2}),
     (BernNB, {'tfidf': False}),
     (SVM, {'tfidf': True, 'kernel': 'linear'}),
+    (SVM, {'tfidf': True, 'kernel': 'linear', 'ngram_n': 2}),
     (SVM, {'tfidf': False, 'kernel': 'linear'}),
+    (SVM, {'tfidf': False, 'kernel': 'linear', 'ngram_n': 2}),
 ]
 
 
@@ -48,10 +53,6 @@ if __name__ == '__main__':
     for data_path in datasets:
         print
         print data_path
-        for model_class in models:
-            params = {}
-            if type(model_class) == tuple:
-                model_class, params = model_class
-
+        for model_class, params in models:
             score = benchmark(model_class, data_path, params)
             print "%.3f" % score, model_class(**params)
