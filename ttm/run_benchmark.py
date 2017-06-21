@@ -23,6 +23,10 @@ datasets = [
 ]
 
 models = [
+    (LSTMClassifier, {'layers': 1, 'embedding_dim': 20, 'epochs': 25, 'batch_size': 128,
+                      'bidirectional': True}),
+    (LSTMClassifier, {'layers': 2, 'embedding_dim': 20, 'epochs': 25, 'batch_size': 128,
+                      'bidirectional': True}),
     (LSTMClassifier, {'layers': 1, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 256}),
     (LSTMClassifier, {'layers': 2, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 128}),
     (LSTMClassifier, {'layers': 3, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 128}),
