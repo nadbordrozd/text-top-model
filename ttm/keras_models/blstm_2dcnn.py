@@ -55,7 +55,7 @@ class BLSTM2DCNN(object):
             recurrent_dropout=self.rec_dropout_rate,
             return_sequences=True)))
         model.add(Reshape((2 * self.max_seq_len, self.units, 1)))
-        model.add(Conv2D(13, (3, 3)))
+        model.add(Conv2D(self.conv_filters, (3, 3)))
         model.add(MaxPool2D(pool_size=(2, 2)))
         model.add(Flatten())
         model.add(Dense(self.num_classes, activation='softmax'))
