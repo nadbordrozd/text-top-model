@@ -15,7 +15,7 @@ class BLSTM2DCNN(object):
             dropout_rate=0.2,
             rec_dropout_rate=0.2,
             embedding_dim=128,
-            max_seq_len = 1000,
+            max_seq_len=1000,
             epochs=15,
             batch_size=128):
         self.layers = layers

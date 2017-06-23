@@ -13,6 +13,7 @@ class LSTMClassifier(object):
             dropout_rate=0.2,
             rec_dropout_rate=0.2,
             embedding_dim=128,
+            max_seq_len=1000,
             bidirectional=False,
             epochs=15,
             batch_size=128):
@@ -22,7 +23,7 @@ class LSTMClassifier(object):
         self.rec_dropout_rate = rec_dropout_rate
         self.epochs = epochs
         self.batch_size = batch_size
-        self.max_seq_len = 1000
+        self.max_seq_len = max_seq_len
         self.embedding_dim = embedding_dim
         self.bidirectional = bidirectional
 
@@ -82,8 +83,9 @@ class LSTMClassifier(object):
     def __str__(self):
         s = "LSTMClassifier(layers=%s, units=%s, dropout_rate=%s, " \
                "rec_dropout_rate=%s, " \
-               "embedding_dim=%s, epochs=%s, batch_size=%s)" % (
-                   self.layers, self.units, self.dropout_rate, self.rec_dropout_rate, self.embedding_dim,
+               "embedding_dim=%s, max_seq_len=%s, epochs=%s, batch_size=%s)" % (
+                   self.layers, self.units, self.dropout_rate, self.rec_dropout_rate,
+                   self.embedding_dim, self.max_seq_len,
                    self.epochs, self.batch_size)
         if self.bidirectional:
             s = 'B' + s
