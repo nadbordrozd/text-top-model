@@ -22,6 +22,11 @@ def benchmark(model_class, data_path, model_params=None):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
     try:
+        model.set_vocab(vocab)
+    except AttributeError:
+        pass
+
+    try:
         model.set_vocab_size(vocab_size)
     except AttributeError:
         pass

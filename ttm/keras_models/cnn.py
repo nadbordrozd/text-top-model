@@ -5,22 +5,40 @@ from keras.layers import Dense, Input, Flatten, Dropout
 from keras.layers import Conv1D, MaxPooling1D, Embedding
 from keras.models import Model
 
+from utils import get_embedding_matrix
+
 
 class FCholletCNN(object):
     """Based on
     https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html
     except with trainable embeddings instead of pretrained from GloVe"""
 
-    def __init__(self, epochs=20, embedding_dim=20, units=128, max_seq_len=1000, dropout_rate=0):
+    def __init__(
+            self,
+            epochs=20,
+            embedding_dim=20,
+            embeddings_path=None,
+            units=128,
+            max_seq_len=1000,
+            dropout_rate=0):
+
         self.model = None
         self.vocab_size = None
+        self.vocab = None
         self.num_classes = None
         self.embedding_dim = embedding_dim
         self.max_seq_len = max_seq_len
+        self.embeddings_path = embeddings_path
+        if embeddings_path is not None:
+            self.embedding_dim = None
 
         self.units = units
         self.dropout_rate = dropout_rate
         self.epochs = epochs
+
+    def set_vocab(self, vocab):
+        self.vocab = vocab
+        self.vocab_size = len(vocab)
 
     def set_vocab_size(self, n):
         self.vocab_size = n
@@ -33,13 +51,21 @@ class FCholletCNN(object):
             raise ValueError(
                 "Must set vocab size and class count before training")
 
-        embedding_matrix = np.zeros((self.vocab_size, self.embedding_dim))
+        if self.embeddings_path is None:
+            embedding_matrix = np.zeros((self.vocab_size, self.embedding_dim))
+            trainable = True
+        else:
+            embedding_matrix = get_embedding_matrix(
+                self.vocab, self.embeddings_path)
+            trainable = False
+            _, self.embedding_dim = embedding_matrix.shape
+
         embedding_layer = Embedding(
             self.vocab_size,
             self.embedding_dim,
             weights=[embedding_matrix],
             input_length=self.max_seq_len,
-            trainable=True)
+            trainable=trainable)
 
         sequence_input = Input(shape=(self.max_seq_len,), dtype='int32')
         embedded_sequences = embedding_layer(sequence_input)
@@ -77,6 +103,12 @@ class FCholletCNN(object):
         return self.predict_proba(X).argmax(axis=1)
 
     def __str__(self):
-        return "FCholletCNN(units=%s, dropout_rate=%s, max_seq_len=%s, epochs=%s, " \
-               "embedding_dim=%s)" % (
-            self.units, self.dropout_rate, self.max_seq_len, self.epochs, self.embedding_dim)
+        if self.embeddings_path is None:
+            return "FCholletCNN(units=%s, dropout_rate=%s, max_seq_len=%s, epochs=%s, " \
+                   "embedding_dim=%s)" % (
+                       self.units, self.dropout_rate, self.max_seq_len, self.epochs, self.embedding_dim)
+        else:
+            return "FCholletCNN(units=%s, dropout_rate=%s, max_seq_len=%s, epochs=%s, " \
+                   "embeddings_path=%s)" % (
+                       self.units, self.dropout_rate, self.max_seq_len, self.epochs,
+                       self.embeddings_path)
