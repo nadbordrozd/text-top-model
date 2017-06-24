@@ -30,7 +30,7 @@ def prepare_dataset(path):
     label_encoder = LabelEncoder()
     labels = label_encoder.fit_transform(y)
     word_counts = Counter(w for text in X for w in text)
-    vocab = [w for (w, _) in sorted(word_counts.items(), key=lambda (_, c): -c)]
+    vocab = [''] + [w for (w, _) in sorted(word_counts.items(), key=lambda (_, c): -c)]
     word2ind = {w: i for i, w in enumerate(vocab)}
     X = np.array([[word2ind[w] for w in tokens] for tokens in X])
     return X, labels, vocab, label_encoder
