@@ -1,10 +1,10 @@
 from keras.layers import Dense, Flatten, Dropout
 from keras.layers import Conv1D, MaxPooling1D
 
-from embedding_classifier import EmbeddingClassifier
+from keras_text_classifier import KerasTextClassifier
 
 
-class FCholletCNN(EmbeddingClassifier):
+class FCholletCNN(KerasTextClassifier):
     """Based on
     https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html
     except with trainable embeddings instead of pretrained from GloVe"""
@@ -35,3 +35,4 @@ class FCholletCNN(EmbeddingClassifier):
         x = Dense(self.units, activation='relu')(x)
         preds = Dense(self.num_classes, activation='softmax')(x)
         return preds
+

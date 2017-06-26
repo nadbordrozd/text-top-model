@@ -1,14 +1,14 @@
 import numpy as np
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
-from keras.layers import Dense, Input, Flatten, Dropout
-from keras.layers import Conv1D, MaxPooling1D, Embedding
+from keras.layers import Dense, Input, Flatten
+from keras.layers import Embedding
 from keras.models import Model
 
 from utils import get_embedding_matrix, get_embedding_dim
 
 
-class EmbeddingClassifier(object):
+class KerasTextClassifier(object):
     """superclass of all keras classifiers classifiers"""
 
     def __init__(self, epochs, max_seq_len, embedding_dim=30, embeddings_path=None,
@@ -103,6 +103,6 @@ class EmbeddingClassifier(object):
         }
 
     def __str__(self):
-        class_name = str(self.__class__).split('.')[-1]
+        class_name = str(self.__class__).split('.')[-1][:-2]
         param_string = ", ".join('%s=%s' % (k, v) for k, v in self.get_params().items())
         return "%s(%s)" % (class_name, param_string)
