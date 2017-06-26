@@ -11,21 +11,21 @@ class FCholletCNN(KerasTextClassifier):
 
     def __init__(
             self,
-            epochs=20,
-            embedding_dim=20,
-            embeddings_path=None,
             max_seq_len=1000,
+            embedding_dim=30,
+            embeddings_path=None,
             optimizer='adam',
+            batch_size=32,
+            epochs=10,
             units=128,
             dropout_rate=0):
-        super(
-            FCholletCNN,
-            self).__init__(
-            epochs,
+        super(FCholletCNN, self).__init__(
             max_seq_len,
             embedding_dim,
             embeddings_path,
-            optimizer)
+            optimizer,
+            batch_size,
+            epochs)
 
         self.units = units
         self.dropout_rate = dropout_rate

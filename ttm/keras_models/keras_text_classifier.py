@@ -13,11 +13,13 @@ class KerasTextClassifier(object):
 
     def __init__(
             self,
-            epochs,
-            max_seq_len,
-            embedding_dim=30,
+            max_seq_len=100,
+            embedding_dim=20,
             embeddings_path=None,
-            optimizer='adam'):
+            optimizer='adam',
+            batch_size=32,
+            epochs=10):
+
         self.model = None
         self.vocab_size = None
         self.vocab = None
@@ -29,13 +31,15 @@ class KerasTextClassifier(object):
             self.embedding_dim = get_embedding_dim(embeddings_path)
         self.optimizer = optimizer
         self.epochs = epochs
+        self.batch_size = batch_size
 
         self.params = {
             'epochs': self.epochs,
             'max_seq_len': self.max_seq_len,
             'embedding_dim': self.embedding_dim,
             'embeddings_path': self.embeddings_path,
-            'optimizer': self.optimizer
+            'optimizer': self.optimizer,
+            'batch_size': self.batch_size
         }
 
     def set_vocab(self, vocab):
@@ -96,7 +100,7 @@ class KerasTextClassifier(object):
 
         padded_X = pad_sequences(X, self.max_seq_len)
         one_hot_y = to_categorical(y, num_classes=self.num_classes)
-        model.fit(padded_X, one_hot_y, epochs=self.epochs)
+        model.fit(padded_X, one_hot_y, batch_size=self.batch_size, epochs=self.epochs)
         self.model = model
         return self
 
