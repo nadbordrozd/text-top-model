@@ -1,5 +1,6 @@
 from sklearn_models import MultNB, BernNB, SVM
 from keras_models.cnn import FCholletCNN
+from keras_models.keras_text_classifier import KerasTextClassifier
 from keras_models.mlp import MLP
 from keras_models.lstm import LSTMClassifier
 from keras_models.blstm_2dcnn import BLSTM2DCNN
@@ -28,13 +29,17 @@ models = [
                       'bidirectional': True}),
     (LSTMClassifier, {'layers': 2, 'embedding_dim': 20, 'epochs': 25, 'batch_size': 128,
                       'bidirectional': True}),
+    (LSTMClassifier, {'layers': 1, 'embeddings_path': '../data/glove.6B/glove.6B.100d.txt', 'epochs': 15, 'batch_size': 256}),
     (LSTMClassifier, {'layers': 1, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 256}),
     (LSTMClassifier, {'layers': 2, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 128}),
     (LSTMClassifier, {'layers': 3, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 128}),
-    (FCholletCNN, {'epochs': 20, 'dropout_rate': 0, 'embedding_dim': 10}),
-    (FCholletCNN, {'epochs': 20, 'dropout_rate': 0, 'embeddings_path':
+
+    (KerasTextClassifier, {'epochs': 1, 'embedding_dim': 10, 'embeddings_path': None,
+                           'max_seq_len': 20, 'optimizer': 'adam'}),
+    (FCholletCNN, {'epochs': 2, 'dropout_rate': 0, 'embedding_dim': 10}),
+    (FCholletCNN, {'epochs': 2, 'dropout_rate': 0, 'embeddings_path':
         '../data/glove.6B/glove.6B.100d.txt'}),
-    (FCholletCNN, {'epochs': 20, 'dropout_rate': 0, 'embedding_dim': 20}),
+    (FCholletCNN, {'epochs': 2, 'dropout_rate': 0, 'embedding_dim': 20}),
     (FCholletCNN, {'epochs': 20, 'dropout_rate': 0, 'embedding_dim': 50}),
     (TFNN, {'layers': 1, 'units': 512, 'epochs': 20}),
     (TFNN, {'layers': 2, 'units': 512, 'epochs': 20}),
@@ -53,7 +58,8 @@ models = [
     (SVM, {'tfidf': True, 'kernel': 'linear', 'ngram_n': 2}),
     (SVM, {'tfidf': False, 'kernel': 'linear'}),
     (SVM, {'tfidf': False, 'kernel': 'linear', 'ngram_n': 2}),
-    (BLSTM2DCNN, {'max_seq_len': 30, })
+    (BLSTM2DCNN, {'max_seq_len': 30}),
+    (BLSTM2DCNN, {'max_seq_len': 30, 'embeddings_path': '../data/glove.6B/glove.6B.100d.txt'})
 ]
 
 
