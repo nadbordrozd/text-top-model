@@ -9,14 +9,28 @@ class FCholletCNN(KerasTextClassifier):
     https://blog.keras.io/using-pre-trained-word-embeddings-in-a-keras-model.html
     except with trainable embeddings instead of pretrained from GloVe"""
 
-    def __init__(self, epochs=20, embedding_dim=20, embeddings_path=None, max_seq_len=1000,
-                 optimizer='adam',
-                 units=128,
-                 dropout_rate=0):
-        super(FCholletCNN, self).__init__(epochs, embedding_dim, embeddings_path, max_seq_len, optimizer)
+    def __init__(
+            self,
+            epochs=20,
+            embedding_dim=20,
+            embeddings_path=None,
+            max_seq_len=1000,
+            optimizer='adam',
+            units=128,
+            dropout_rate=0):
+        super(
+            FCholletCNN,
+            self).__init__(
+            epochs,
+            max_seq_len,
+            embedding_dim,
+            embeddings_path,
+            optimizer)
 
         self.units = units
         self.dropout_rate = dropout_rate
+        self.params['units'] = units
+        self.params['dropout_rate'] = dropout_rate
 
     def transform_embedded_sequences(self, embedded_sequences):
         x = Conv1D(self.units, 5, activation='relu')(embedded_sequences)
@@ -35,4 +49,3 @@ class FCholletCNN(KerasTextClassifier):
         x = Dense(self.units, activation='relu')(x)
         preds = Dense(self.num_classes, activation='softmax')(x)
         return preds
-

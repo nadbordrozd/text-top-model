@@ -11,8 +11,13 @@ from utils import get_embedding_matrix, get_embedding_dim
 class KerasTextClassifier(object):
     """superclass of all keras classifiers classifiers"""
 
-    def __init__(self, epochs, max_seq_len, embedding_dim=30, embeddings_path=None,
-                 optimizer='adam'):
+    def __init__(
+            self,
+            epochs,
+            max_seq_len,
+            embedding_dim=30,
+            embeddings_path=None,
+            optimizer='adam'):
         self.model = None
         self.vocab_size = None
         self.vocab = None
@@ -25,6 +30,14 @@ class KerasTextClassifier(object):
         self.optimizer = optimizer
         self.epochs = epochs
 
+        self.params = {
+            'epochs': self.epochs,
+            'max_seq_len': self.max_seq_len,
+            'embedding_dim': self.embedding_dim,
+            'embeddings_path': self.embeddings_path,
+            'optimizer': self.optimizer
+        }
+
     def set_vocab(self, vocab):
         self.vocab = vocab
         self.vocab_size = len(vocab)
@@ -34,7 +47,8 @@ class KerasTextClassifier(object):
 
     def build_embedding_layer(self):
         if self.embeddings_path is None:
-            embedding_matrix = np.random.normal(size=(self.vocab_size, self.embedding_dim))
+            embedding_matrix = np.random.normal(
+                size=(self.vocab_size, self.embedding_dim))
             trainable = True
         else:
             embedding_matrix = get_embedding_matrix(
@@ -94,15 +108,10 @@ class KerasTextClassifier(object):
         return self.predict_proba(X).argmax(axis=1)
 
     def get_params(self):
-        return {
-            'epochs': self.epochs,
-            'max_seq_len': self.max_seq_len,
-            'embedding_dim': self.embedding_dim,
-            'embeddings_path': self.embeddings_path,
-            'optimizer': self.optimizer
-        }
+        return self.params
 
     def __str__(self):
         class_name = str(self.__class__).split('.')[-1][:-2]
-        param_string = ", ".join('%s=%s' % (k, v) for k, v in self.get_params().items())
+        param_string = ", ".join('%s=%s' % (k, v)
+                                 for k, v in self.get_params().items())
         return "%s(%s)" % (class_name, param_string)
