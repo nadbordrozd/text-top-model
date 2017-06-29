@@ -93,3 +93,7 @@ if [ ! -f webkb-stemmed.txt ]; then
 fi
 
 
+if [ ! glove.6B ]; then
+    wget http://nlp.stanford.edu/data/glove.6B.zip
+    unzip glove.6B.zip
+fi
