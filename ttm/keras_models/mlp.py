@@ -2,12 +2,19 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
 from keras.preprocessing.text import Tokenizer
+from keras.callbacks import EarlyStopping
 
 
 class MLP(object):
 
-    def __init__(self, layers=1, units=512, dropout_rate=0.5, max_vocab_size=10000, epochs=5,
-                                                                                  batch_size=128):
+    def __init__(
+            self,
+            layers=1,
+            units=512,
+            dropout_rate=0.5,
+            max_vocab_size=10000,
+            epochs=5,
+            batch_size=128):
         self.layers = layers
         self.units = units
         self.dropout_rate = dropout_rate
@@ -19,6 +26,8 @@ class MLP(object):
         self.vocab_size = None
         self.num_classes = None
         self.model = None
+        self.patience = 3
+        self.history = None
 
     def set_vocab_size(self, n):
         self.vocab_size = min(n, self.max_vocab_size)
@@ -27,7 +36,7 @@ class MLP(object):
     def set_class_count(self, n):
         self.num_classes = n
 
-    def fit(self, X, y):
+    def fit(self, X, y, validation_data=None):
         if self.vocab_size is None or self.num_classes is None:
             raise ValueError(
                 "Must set vocab size and class count before training")
@@ -50,10 +59,25 @@ class MLP(object):
                       optimizer='adam',
                       metrics=['accuracy'])
 
-        self.history = model.fit(X, y,
-                                 batch_size=self.batch_size,
-                                 epochs=self.epochs,
-                                 verbose=1)
+        if validation_data is not None:
+            v_X, v_y = validation_data
+            v_X = self.tokenizer.sequences_to_matrix(v_X, mode='binary')
+            v_y = keras.utils.to_categorical(v_y, self.num_classes)
+
+            early_stopping = EarlyStopping(
+                monitor='val_loss', patience=self.patience)
+            self.history = model.fit(
+                X, y,
+                batch_size=self.batch_size,
+                epochs=self.epochs,
+                verbose=1,
+                validation_data=[v_X, v_y],
+                callbacks=[early_stopping])
+        else:
+            self.history = model.fit(X, y,
+                                     batch_size=self.batch_size,
+                                     epochs=self.epochs,
+                                     verbose=1)
         self.model = model
         return self
 
@@ -67,5 +91,5 @@ class MLP(object):
     def __str__(self):
         return "MLP(layers=%s, units=%s, dropout_rate=%s, max_vocab_size=%s, epochs=%s, " \
                "batch_size=%s)" % (
-            self.layers, self.units, self.dropout_rate, self.max_vocab_size, self.epochs,
-            self.batch_size)
+                   self.layers, self.units, self.dropout_rate, self.max_vocab_size, self.epochs,
+                   self.batch_size)
