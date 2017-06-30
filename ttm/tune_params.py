@@ -1,8 +1,9 @@
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
 import pprint
 
-from benchmarks import benchmark, cache
+from benchmarks import benchmark_with_early_stopping, cache
 from keras_models.mlp import MLP
+from keras_models.lstm import LSTMClassifier
 
 
 def fix_ints(d):
@@ -16,8 +17,12 @@ def fix_ints(d):
 def hyperopt_me_like_one_of_your_french_girls(
         classifier, data_path, space, max_evals):
     def objective(args):
+        best_loss, best_acc, best_epoch = benchmark_with_early_stopping(classifier, data_path,
+                                                                        fix_ints(args))
         return {
-            'loss': benchmark(classifier, data_path, fix_ints(args)),
+            'loss': best_loss,
+            'accuracy': best_acc,
+            'epochs': best_epoch,
             'status': STATUS_OK
         }
 
@@ -41,9 +46,71 @@ if __name__ == '__main__':
             'layers': hp.quniform('layers', 1, 5, 1),
             'units': hp.quniform('units', 8, 2048, 1),
             'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.99),
-            'epochs': hp.quniform('epochs', 5, 150, 1),
+            'epochs': 200,
             'max_vocab_size': hp.quniform('max_vocab_size', 4000, 22000, 1000)
-        }, max_evals=200)
+        }, max_evals=300)
 
-    print 'MLP'
+    print '\n\nMLP'
+    pp.pprint(trials.best_trial)
+
+    trials = hyperopt_me_like_one_of_your_french_girls(
+        LSTMClassifier, DATA_PATH, {
+            'layers': hp.quniform('layers', 1, 4, 1),
+            'units': hp.quniform('units', 8, 128, 1),
+            'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.99),
+            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.01, 0.99),
+            'epochs': 30,
+            'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
+            'embedding_dim': hp.quniform('embedding_dim', 2, 40, 1)
+        }, max_evals=50)
+
+    print '\n\nLSTM'
+    pp.pprint(trials.best_trial)
+
+
+    trials = hyperopt_me_like_one_of_your_french_girls(
+        LSTMClassifier, DATA_PATH, {
+            'layers': hp.quniform('layers', 1, 3, 1),
+            'units': hp.quniform('units', 8, 64, 1),
+            'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.99),
+            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.01, 0.99),
+            'epochs': 30,
+            'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
+            'embedding_dim': hp.quniform('embedding_dim', 2, 40, 1),
+            'bidirectional': True,
+            'batch_size': 64
+        }, max_evals=50)
+
+    print '\n\nBLSTM'
+    pp.pprint(trials.best_trial)
+
+    trials = hyperopt_me_like_one_of_your_french_girls(
+        LSTMClassifier, DATA_PATH, {
+            'layers': hp.quniform('layers', 1, 3, 1),
+            'units': hp.quniform('units', 8, 64, 1),
+            'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.99),
+            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.01, 0.99),
+            'epochs': 30,
+            'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
+            'embeddings_path': '../data/glove.6B/glove.6B.100d.txt',
+            'bidirectional': True,
+            'batch_size': 64
+        }, max_evals=50)
+
+    print '\n\nBLSTM with pretrained embedding'
+    pp.pprint(trials.best_trial)
+
+    trials = hyperopt_me_like_one_of_your_french_girls(
+        LSTMClassifier, DATA_PATH, {
+            'layers': hp.quniform('layers', 1, 3, 1),
+            'units': hp.quniform('units', 8, 64, 1),
+            'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.99),
+            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.01, 0.99),
+            'epochs': 30,
+            'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
+            'embeddings_path': '../data/glove.6B/glove.6B.100d.txt',
+            'batch_size': 64
+        }, max_evals=50)
+
+    print '\n\nLSTM with pretrained embedding'
     pp.pprint(trials.best_trial)
