@@ -4,6 +4,7 @@ from keras.utils import to_categorical
 from keras.layers import Dense, Input, Flatten
 from keras.layers import Embedding
 from keras.models import Model
+from keras.callbacks import EarlyStopping
 
 from utils import get_embedding_matrix, get_embedding_dim
 
@@ -32,6 +33,8 @@ class KerasTextClassifier(object):
         self.optimizer = optimizer
         self.epochs = epochs
         self.batch_size = batch_size
+        self.patience = 3
+        self.history = None
 
         self.params = {
             'epochs': self.epochs,
@@ -91,7 +94,7 @@ class KerasTextClassifier(object):
         model = Model(sequence_input, predictions)
         return model
 
-    def fit(self, X, y):
+    def fit(self, X, y, validation_data=None):
         self.validate_params()
         model = self.build_model()
         model.compile(loss='categorical_crossentropy',
@@ -100,7 +103,26 @@ class KerasTextClassifier(object):
 
         padded_X = pad_sequences(X, self.max_seq_len)
         one_hot_y = to_categorical(y, num_classes=self.num_classes)
-        model.fit(padded_X, one_hot_y, batch_size=self.batch_size, epochs=self.epochs)
+
+        if validation_data is not None:
+            v_X, v_y = validation_data
+            v_X = pad_sequences(v_X, self.max_seq_len)
+            v_y = to_categorical(v_y, self.num_classes)
+
+            early_stopping = EarlyStopping(
+                monitor='val_loss', patience=self.patience)
+            self.history = model.fit(
+                X, y,
+                batch_size=self.batch_size,
+                epochs=self.batch_size,
+                validation_data=[v_X, v_y],
+                callbacks=[early_stopping])
+        else:
+            self.history = model.fit(
+                padded_X,
+                one_hot_y,
+                batch_size=self.batch_size,
+                epochs=self.epochs)
         self.model = model
         return self
 
