@@ -75,8 +75,8 @@ def benchmark_with_early_stopping(model_class, data_path, model_params=None):
         pass
 
     model.fit(X_train, y_train, validation_data=[X_test, y_test])
-    best_loss = np.min(model.history['val_loss'])
-    best_acc = np.max(model.history['val_acc'])
-    best_epoch = np.argmin(model.history['val_loss']) + 1
+    best_loss = np.min(model.history.history['val_loss'])
+    best_acc = np.max(model.history.history['val_acc'])
+    best_epoch = np.argmin(model.history.history['val_loss']) + 1
 
     return best_loss, best_acc, best_epoch
