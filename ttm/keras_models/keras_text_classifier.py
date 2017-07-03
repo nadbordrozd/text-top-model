@@ -112,7 +112,7 @@ class KerasTextClassifier(object):
             early_stopping = EarlyStopping(
                 monitor='val_loss', patience=self.patience)
             self.history = model.fit(
-                X, y,
+                padded_X, one_hot_y,
                 batch_size=self.batch_size,
                 epochs=self.batch_size,
                 validation_data=[v_X, v_y],
