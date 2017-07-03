@@ -4,6 +4,8 @@ import pprint
 from benchmarks import benchmark_with_early_stopping, cache
 from keras_models.mlp import MLP
 from keras_models.lstm import LSTMClassifier
+from keras_models.blstm_2dcnn import BLSTM2DCNN
+from keras_models.cnn import FCholletCNN
 
 
 def fix_ints(d):
@@ -51,6 +53,28 @@ if __name__ == '__main__':
         }, max_evals=300)
 
     print '\n\nMLP'
+    pp.pprint(trials.best_trial)
+
+    trials = hyperopt_me_like_one_of_your_french_girls(
+        FCholletCNN, DATA_PATH, {
+            'units': hp.quniform('units', 16, 512, 16),
+            'dropout_rate': hp.uniform('dropout_rate', 0, 0.9),
+            'epochs': 200,
+            'embedding_dim': hp.quniform('embedding_dim', 2, 40, 1)
+        }, max_evals=2)
+
+    print '\n\nFChollet'
+    pp.pprint(trials.best_trial)
+
+    trials = hyperopt_me_like_one_of_your_french_girls(
+        FCholletCNN, DATA_PATH, {
+            'units': hp.quniform('units', 16, 512, 16),
+            'dropout_rate': hp.uniform('dropout_rate', 0, 0.9),
+            'epochs': 200,
+            'embeddings_path': '../data/glove.6B/glove.6B.100d.txt',
+        }, max_evals=2)
+
+    print '\n\nFChollet with pretrained embeddings'
     pp.pprint(trials.best_trial)
 
     trials = hyperopt_me_like_one_of_your_french_girls(
