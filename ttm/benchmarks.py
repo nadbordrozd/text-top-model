@@ -3,6 +3,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from prepare_data import prepare_dataset, cache
 
+
 @cache
 def benchmark(model_class, data_path, model_params=None):
     """benchmarks a given model on a given dataset
