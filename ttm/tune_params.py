@@ -61,7 +61,7 @@ if __name__ == '__main__':
             'dropout_rate': hp.uniform('dropout_rate', 0, 0.9),
             'epochs': 200,
             'embedding_dim': hp.quniform('embedding_dim', 2, 40, 1)
-        }, max_evals=2)
+        }, max_evals=50)
 
     print '\n\nFChollet'
     pp.pprint(trials.best_trial)
@@ -72,7 +72,7 @@ if __name__ == '__main__':
             'dropout_rate': hp.uniform('dropout_rate', 0, 0.9),
             'epochs': 200,
             'embeddings_path': '../data/glove.6B/glove.6B.100d.txt',
-        }, max_evals=2)
+        }, max_evals=50)
 
     print '\n\nFChollet with pretrained embeddings'
     pp.pprint(trials.best_trial)
@@ -103,7 +103,7 @@ if __name__ == '__main__':
             'embedding_dim': hp.quniform('embedding_dim', 2, 40, 1),
             'bidirectional': True,
             'batch_size': 64
-        }, max_evals=50)
+        }, max_evals=10)
 
     print '\n\nBLSTM'
     pp.pprint(trials.best_trial)
@@ -119,7 +119,7 @@ if __name__ == '__main__':
             'embeddings_path': '../data/glove.6B/glove.6B.100d.txt',
             'bidirectional': True,
             'batch_size': 64
-        }, max_evals=50)
+        }, max_evals=10)
 
     print '\n\nBLSTM with pretrained embedding'
     pp.pprint(trials.best_trial)
@@ -134,7 +134,7 @@ if __name__ == '__main__':
             'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
             'embeddings_path': '../data/glove.6B/glove.6B.100d.txt',
             'batch_size': 64
-        }, max_evals=50)
+        }, max_evals=10)
 
     print '\n\nLSTM with pretrained embedding'
     pp.pprint(trials.best_trial)
