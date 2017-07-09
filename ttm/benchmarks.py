@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
+from sklearn.cross_validation import train_test_split
 from prepare_data import prepare_dataset, cache
 
 
@@ -80,4 +80,5 @@ def benchmark_with_early_stopping(model_class, data_path, model_params=None):
     best_acc = np.max(model.history.history['val_acc'])
     best_epoch = np.argmin(model.history.history['val_loss']) + 1
 
+    print model, "acc", best_acc, "loss",  best_loss, "epochs", best_epoch
     return best_loss, best_acc, best_epoch
