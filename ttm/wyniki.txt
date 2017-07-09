@@ -1,0 +1,29 @@
+{ 'dropout_rate': 0.0979600334864457,
+  'embedding_dim': 10,
+  'epochs': 30,
+  'layers': 2,
+  'optimizer': 'rmsprop',
+  'rec_dropout_rate': 0.40967609545970063,
+  'units': 118})
+Train on 13174 samples, validate on 5647 samples
+--
+Epoch 113/128
+ 113174/13174 [==============================] - 369s - loss: 0.2554 - acc: 0.9178 - val_loss: 0.9445 - val_acc: 0.7567
+
+
+benchmark_with_early_stopping-alias(<class 'keras_models.lstm.LSTMClassifier'>, '../data/20ng-all-terms.txt', { 'dropout_rate': 0.33445797616874307,
+  'embedding_dim': 7,
+  'epochs': 30,
+  'layers': 3,
+  'optimizer': 'adam',
+  'rec_dropout_rate': 0.9352931603900724,
+  'units': 105})
+Train on 13174 samples, validate on 5647 samples
+--
+Epoch 9/128
+1113174/13174 [==============================] - 545s - loss: 3.0153 - acc: 0.0518 - val_loss: 2.9940 - val_acc: 0.0517
+__________________________benchmark_with_early_stopping-alias - 4975.4s, 82.9min
+________________________________________________________________________________
+[Memory] Calling benchmarks.benchmark_with_early_stopping-alias...
+benchmark_with_early_stopping-alias(<class 'keras_models.lstm.LSTMClassifier'>, '../data/20ng-all-terms.txt', { 'dropout_rate': 0.7625302646489969,
+
