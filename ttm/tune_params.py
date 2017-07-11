@@ -81,12 +81,12 @@ if __name__ == '__main__':
         LSTMClassifier, DATA_PATH, {
             'layers': hp.quniform('layers', 1, 4, 1),
             'units': hp.quniform('units', 8, 128, 1),
-            'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.99),
-            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.01, 0.99),
+            'dropout_rate': hp.uniform('dropout_rate', 0.2, 0.7),
+            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.2, 0.7),
             'epochs': 30,
             'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
             'embedding_dim': hp.quniform('embedding_dim', 2, 40, 1)
-        }, max_evals=50)
+        }, max_evals=5)
 
     print '\n\nLSTM'
     pp.pprint(trials.best_trial)
@@ -96,8 +96,8 @@ if __name__ == '__main__':
         LSTMClassifier, DATA_PATH, {
             'layers': hp.quniform('layers', 1, 3, 1),
             'units': hp.quniform('units', 8, 64, 1),
-            'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.99),
-            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.01, 0.99),
+            'dropout_rate': hp.uniform('dropout_rate', 0.2, 0.7),
+            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.2, 0.7),
             'epochs': 30,
             'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
             'embedding_dim': hp.quniform('embedding_dim', 2, 40, 1),
@@ -112,14 +112,14 @@ if __name__ == '__main__':
         LSTMClassifier, DATA_PATH, {
             'layers': hp.quniform('layers', 1, 3, 1),
             'units': hp.quniform('units', 8, 64, 1),
-            'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.99),
-            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.01, 0.99),
+            'dropout_rate': hp.uniform('dropout_rate', 0.2, 0.7),
+            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.2, 0.7),
             'epochs': 30,
             'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
             'embeddings_path': '../data/glove.6B/glove.6B.100d.txt',
             'bidirectional': True,
             'batch_size': 64
-        }, max_evals=10)
+        }, max_evals=5)
 
     print '\n\nBLSTM with pretrained embedding'
     pp.pprint(trials.best_trial)
@@ -128,13 +128,13 @@ if __name__ == '__main__':
         LSTMClassifier, DATA_PATH, {
             'layers': hp.quniform('layers', 1, 3, 1),
             'units': hp.quniform('units', 8, 64, 1),
-            'dropout_rate': hp.uniform('dropout_rate', 0.01, 0.99),
-            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.01, 0.99),
+            'dropout_rate': hp.uniform('dropout_rate', 0.2, 0.7),
+            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0.2, 0.7),
             'epochs': 30,
             'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
             'embeddings_path': '../data/glove.6B/glove.6B.100d.txt',
             'batch_size': 64
-        }, max_evals=10)
+        }, max_evals=5)
 
     print '\n\nLSTM with pretrained embedding'
     pp.pprint(trials.best_trial)
