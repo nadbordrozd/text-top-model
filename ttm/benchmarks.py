@@ -1,4 +1,6 @@
 import numpy as np
+from time import time
+
 from sklearn.metrics import accuracy_score
 from sklearn.cross_validation import train_test_split
 from prepare_data import prepare_dataset, cache
@@ -31,7 +33,8 @@ def benchmark(model_class, data_path, model_params=None, iters=1):
     :param data_path: path to file with dataset
     :param model_params: optional dictionary with model parameters
     :param iters: how many times to benchmark
-    :return: list accuracy scores of the model on the dataset
+    :param return_time: if true, returns list of running times in addition to scores
+    :return: tuple (accuracy scores, running times)
     """
     if model_params is None:
         model_params = {}
@@ -40,14 +43,17 @@ def benchmark(model_class, data_path, model_params=None, iters=1):
     class_count = len(label_encoder.classes_)
 
     scores = []
+    times = []
     for i in range(iters):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=i)
         model = model_class(**model_params)
         set_metadata(model, vocab, class_count)
-
+        start = time()
         preds = model.fit(X_train, y_train).predict(X_test)
+        end = time()
         scores.append(accuracy_score(preds, y_test))
-    return scores
+        times.append(end - start)
+    return scores, times
 
 
 @cache

@@ -1,14 +1,10 @@
 import numpy as np
+import json
 
 from sklearn_models import MultNB, BernNB, SVM
 from keras_models.cnn import FCholletCNN
-from keras_models.keras_text_classifier import KerasTextClassifier
 from keras_models.mlp import MLP
-from keras_models.lstm import LSTMClassifier
-from keras_models.blstm_2dcnn import BLSTM2DCNN
-from tflearn_models import TFNN
 from benchmarks import benchmark
-
 
 datasets = [
     '../data/r8-all-terms.txt',
@@ -27,27 +23,11 @@ datasets = [
 ]
 
 models = [
-    (LSTMClassifier, {'layers': 1, 'embedding_dim': 20, 'epochs': 25, 'batch_size': 128,
-                      'bidirectional': True}),
-    (LSTMClassifier, {'layers': 2, 'embedding_dim': 20, 'epochs': 25, 'batch_size': 128,
-                      'bidirectional': True}),
-    (LSTMClassifier, {'layers': 1, 'embeddings_path': '../data/glove.6B/glove.6B.100d.txt', 'epochs': 15, 'batch_size': 256}),
-    (LSTMClassifier, {'layers': 1, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 256}),
-    (LSTMClassifier, {'layers': 2, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 128}),
-    (LSTMClassifier, {'layers': 3, 'embedding_dim': 64, 'epochs': 15, 'batch_size': 128}),
-
-    (KerasTextClassifier, {'epochs': 1, 'embedding_dim': 10, 'embeddings_path': None,
-                           'max_seq_len': 20, 'optimizer': 'adam'}),
-    (FCholletCNN, {'epochs': 2, 'dropout_rate': 0, 'embedding_dim': 10}),
-    (FCholletCNN, {'epochs': 2, 'dropout_rate': 0, 'embeddings_path':
-        '../data/glove.6B/glove.6B.100d.txt'}),
-    (FCholletCNN, {'epochs': 2, 'dropout_rate': 0, 'embedding_dim': 20}),
-    (FCholletCNN, {'epochs': 20, 'dropout_rate': 0, 'embedding_dim': 50}),
-    (TFNN, {'layers': 1, 'units': 512, 'epochs': 20}),
-    (TFNN, {'layers': 2, 'units': 512, 'epochs': 20}),
-    (TFNN, {'layers': 4, 'units': 512, 'epochs': 20}),
-    (MLP, {'layers': 1, 'dropout_rate': 0.2, 'epochs': 20}),
-    (MLP, {'layers': 2, 'dropout_rate': 0.2, 'epochs': 20}),
+    (FCholletCNN, {'dropout_rate': 0.5, 'embedding_dim': 37, 'units': 400, 'epochs': 30}),
+    (FCholletCNN, {'dropout_rate': 0.5, 'epochs': 20, 'units': 400, 'embeddings_path':
+        '../data/glove.6B.100d.txt'}),
+    (MLP, {'layers': 1, 'units': 360, 'dropout_rate': 0.87, 'epochs': 12, 'max_vocab_size': 22000}),
+    (MLP, {'layers': 2, 'units': 180, 'dropout_rate': 0.6, 'epochs': 5, 'max_vocab_size': 22000}),
     (MLP, {'layers': 3, 'dropout_rate': 0.2, 'epochs': 20}),
     (MultNB, {'tfidf': True}),
     (MultNB, {'tfidf': True, 'ngram_n': 2}),
@@ -59,17 +39,29 @@ models = [
     (SVM, {'tfidf': True, 'kernel': 'linear'}),
     (SVM, {'tfidf': True, 'kernel': 'linear', 'ngram_n': 2}),
     (SVM, {'tfidf': False, 'kernel': 'linear'}),
-    (SVM, {'tfidf': False, 'kernel': 'linear', 'ngram_n': 2}),
-    (BLSTM2DCNN, {'max_seq_len': 30}),
-    (BLSTM2DCNN, {'max_seq_len': 30, 'embeddings_path': '../data/glove.6B/glove.6B.100d.txt'})
+    (SVM, {'tfidf': False, 'kernel': 'linear', 'ngram_n': 2})
 ]
 
+results_path = 'results.json'
 
 if __name__ == '__main__':
+    records = []
     for data_path in datasets:
         print
         print data_path
+
         for model_class, params in models:
-            scores = benchmark(model_class, data_path, params)
-            score = np.mean(scores)
-            print "%.3f" % score, model_class(**params)
+            scores, times = benchmark(model_class, data_path, params, 10)
+            model_str = str(model_class(**params))
+            print '%.3f' % np.mean(scores), model_str
+            for score, time in zip(scores, times):
+                records.append({
+                    'model': model_str,
+                    'dataset': data_path,
+                    'score': score,
+                    'time': time
+                })
+
+    with open(results_path, 'wb') as f:
+        for r in records:
+            f.write(json.dumps(r) + '\n')
