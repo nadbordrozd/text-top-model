@@ -1,3 +1,5 @@
+import numpy as np
+
 from sklearn_models import MultNB, BernNB, SVM
 from keras_models.cnn import FCholletCNN
 from keras_models.keras_text_classifier import KerasTextClassifier
@@ -68,5 +70,6 @@ if __name__ == '__main__':
         print
         print data_path
         for model_class, params in models:
-            score = benchmark(model_class, data_path, params)
+            scores = benchmark(model_class, data_path, params)
+            score = np.mean(scores)
             print "%.3f" % score, model_class(**params)
