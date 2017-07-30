@@ -25,7 +25,7 @@ datasets = [
 models = [
     (FCholletCNN, {'dropout_rate': 0.5, 'embedding_dim': 37, 'units': 400, 'epochs': 30}),
     (FCholletCNN, {'dropout_rate': 0.5, 'epochs': 20, 'units': 400, 'embeddings_path':
-        '../data/glove.6B.100d.txt'}),
+        '../data/glove.6B/glove.6B.100d.txt'}),
     (MLP, {'layers': 1, 'units': 360, 'dropout_rate': 0.87, 'epochs': 12, 'max_vocab_size': 22000}),
     (MLP, {'layers': 2, 'units': 180, 'dropout_rate': 0.6, 'epochs': 5, 'max_vocab_size': 22000}),
     (MLP, {'layers': 3, 'dropout_rate': 0.2, 'epochs': 20}),
