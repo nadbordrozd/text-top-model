@@ -100,4 +100,12 @@ if [ ! -d glove.6B ]; then
     mv glove.6B.* glove.6B
 fi
 
+
+if [ ! -d SentenceCorpus ]; then
+    wget https://archive.ics.uci.edu/ml/machine-learning-databases/00311/SentenceCorpus.zip
+    unzip SentenceCorpus.zip
+    rm SentenceCorpus.zip
+    rm -rf __MACOSX
+fi
+
 echo done
