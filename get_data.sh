@@ -108,4 +108,13 @@ if [ ! -d SentenceCorpus ]; then
     rm -rf __MACOSX
 fi
 
+
+if [ ! -d subjectivity_dataset ]; then
+    mkdir subjectivity_dataset
+    cd subjectivity_dataset
+    wget http://www.cs.cornell.edu/people/pabo/movie-review-data/rotten_imdb.tar.gz
+    tar -xvf rotten_imdb.tar.gz
+    cd ../
+fi
+
 echo done
