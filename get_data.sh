@@ -117,4 +117,14 @@ if [ ! -d subjectivity_dataset ]; then
     cd ../
 fi
 
+if [ ! -d polarity ]; then
+    mkdir polarity
+    cd polarity
+    wget http://www.cs.cornell.edu/people/pabo/movie-review-data/rt-polaritydata.tar.gz
+    tar -xvf rt-polaritydata.tar.gz
+    mv rt-polaritydata/* ./
+    rm -rf rt-polaritydata
+    cd ../
+fi
+
 echo done
