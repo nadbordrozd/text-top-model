@@ -14,7 +14,6 @@ class BLSTM2DCNN(KerasTextClassifier):
             optimizer='adam',
             batch_size=128,
             epochs=10,
-            layers=1,
             units=128,
             dropout_rate=0.2,
             rec_dropout_rate=0.2,
@@ -28,7 +27,6 @@ class BLSTM2DCNN(KerasTextClassifier):
             batch_size,
             epochs)
 
-        self.params['layers'] = layers
         self.params['units'] = units
         self.params['dropout_rate'] = dropout_rate
         self.params['rec_dropout_rate'] = rec_dropout_rate
