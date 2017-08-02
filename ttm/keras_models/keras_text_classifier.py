@@ -114,7 +114,7 @@ class KerasTextClassifier(object):
             self.history = model.fit(
                 padded_X, one_hot_y,
                 batch_size=self.batch_size,
-                epochs=self.batch_size,
+                epochs=self.epochs,
                 validation_data=[v_X, v_y],
                 callbacks=[early_stopping])
         else:
