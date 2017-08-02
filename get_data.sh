@@ -117,6 +117,7 @@ if [ ! -d subjectivity_dataset ]; then
     cd ../
 fi
 
+
 if [ ! -d polarity ]; then
     mkdir polarity
     cd polarity
@@ -125,6 +126,12 @@ if [ ! -d polarity ]; then
     mv rt-polaritydata/* ./
     rm -rf rt-polaritydata
     cd ../
+fi
+
+
+if [ ! -d stanfordSentimentTreebank ]; then
+    wget http://nlp.stanford.edu/~socherr/stanfordSentimentTreebank.zip
+    unzip stanfordSentimentTreebank.zip
 fi
 
 echo done
