@@ -5,7 +5,7 @@ from benchmarks import benchmark_with_early_stopping, cache
 from keras_models.mlp import MLP
 from keras_models.lstm import LSTMClassifier
 from keras_models.blstm_2dcnn import BLSTM2DCNN
-
+from keras_models.ykim_cnn import YKimCNN
 
 def fix_ints(d):
     return {
@@ -41,6 +41,83 @@ def hyperopt_me_like_one_of_your_french_girls(
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)
     DATA_PATH = '../data/polarity.txt'
+
+    trials = hyperopt_me_like_one_of_your_french_girls(
+        YKimCNN, DATA_PATH, {
+            'units': hp.quniform('units', 10, 100, 10),
+            'dropout_rates': [hp.uniform('dropout_1', 0.1, 0.9), hp.uniform('dropout_2', 0.1, 0.9)],
+            'num_filters': hp.quniform('num_filters', 5, 100, 5),
+            'filter_sizes': hp.choice('filter_sizes', [
+                [3, 8],
+                [3, 5],
+                [3, 6],
+                [3, 4, 5],
+                [3, 5, 8],
+                [3, 5, 7],
+                [3, 4, 5, 6]
+            ]),
+            'embedding_dim': hp.quniform('embedding_dim', 5, 60, 5),
+            'epochs': 200,
+            'max_seq_len': 50
+        }, max_evals=100)
+
+    print '\n\nYKimCNN trainable embedding'
+    pp.pprint(trials.best_trial)
+
+    trials = hyperopt_me_like_one_of_your_french_girls(
+        YKimCNN, DATA_PATH, {
+            'units': hp.quniform('units', 10, 100, 10),
+            'dropout_rates': [hp.uniform('dropout_1', 0.1, 0.9), hp.uniform('dropout_2', 0.1, 0.9)],
+            'num_filters': hp.quniform('num_filters', 5, 100, 5),
+            'filter_sizes': hp.choice('filter_sizes', [
+                [3, 8],
+                [3, 5],
+                [3, 6],
+                [3, 4, 5],
+                [3, 5, 8],
+                [3, 5, 7],
+                [3, 4, 5, 6]
+            ]),
+            'embeddings_path': '../data/glove.6B/glove.6B.100d.txt',
+            'epochs': 200,
+            'max_seq_len': 50
+        }, max_evals=100)
+
+    print '\n\nYKimCNN glove embedding'
+    pp.pprint(trials.best_trial)
+
+
+    trials = hyperopt_me_like_one_of_your_french_girls(
+        BLSTM2DCNN, DATA_PATH, {
+            'units': hp.quniform('units', 8, 128, 4),
+            'max_seq_len': 50,
+            'dropout_rate': hp.uniform('dropout_rate', 0., 0.95),
+            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0., 0.95),
+            'epochs': 60,
+            'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
+            'embeddings_path': '../data/glove.6B/glove.6B.100d.txt',
+            'bidirectional': True,
+            'batch_size': 64
+        }, max_evals=100)
+
+    print '\n\nBLSTM with pretrained embedding'
+    pp.pprint(trials.best_trial)
+
+
+    trials = hyperopt_me_like_one_of_your_french_girls(
+        BLSTM2DCNN, DATA_PATH, {
+            'units': hp.quniform('units', 8, 256, 1),
+            'max_seq_len': 50,
+            'dropout_rate': hp.uniform('dropout_rate', 0., 0.9),
+            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0., 0.9),
+            'epochs': 60,
+            'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
+            'embedding_dim': hp.quniform('embedding_dim', 2, 40, 1)
+        }, max_evals=100)
+
+    print '\n\nBLSTM2DCNN with trainable embedding'
+    pp.pprint(trials.best_trial)
+
 
     trials = hyperopt_me_like_one_of_your_french_girls(
         MLP, DATA_PATH, {
@@ -119,36 +196,4 @@ if __name__ == '__main__':
         }, max_evals=100)
 
     print '\n\nLSTM with pretrained embedding'
-    pp.pprint(trials.best_trial)
-
-
-    trials = hyperopt_me_like_one_of_your_french_girls(
-        BLSTM2DCNN, DATA_PATH, {
-            'units': hp.quniform('units', 8, 128, 4),
-            'max_seq_len': 50,
-            'dropout_rate': hp.uniform('dropout_rate', 0., 0.95),
-            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0., 0.95),
-            'epochs': 60,
-            'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
-            'embeddings_path': '../data/glove.6B/glove.6B.100d.txt',
-            'bidirectional': True,
-            'batch_size': 64
-        }, max_evals=100)
-
-    print '\n\nBLSTM with pretrained embedding'
-    pp.pprint(trials.best_trial)
-
-
-    trials = hyperopt_me_like_one_of_your_french_girls(
-        BLSTM2DCNN, DATA_PATH, {
-            'units': hp.quniform('units', 8, 256, 1),
-            'max_seq_len': 50,
-            'dropout_rate': hp.uniform('dropout_rate', 0., 0.9),
-            'rec_dropout_rate': hp.uniform('rec_dropout_rate', 0., 0.9),
-            'epochs': 60,
-            'optimizer': hp.choice('optimizer', ['adam', 'rmsprop']),
-            'embedding_dim': hp.quniform('embedding_dim', 2, 40, 1)
-        }, max_evals=100)
-
-    print '\n\nBLSTM2DCNN with trainable embedding'
     pp.pprint(trials.best_trial)
