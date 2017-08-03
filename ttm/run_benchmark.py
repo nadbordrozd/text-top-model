@@ -2,7 +2,7 @@ import numpy as np
 import json
 
 from sklearn_models import MultNB, BernNB, SVM
-from keras_models.cnn import FCholletCNN
+from keras_models.fchollet_cnn import FCholletCNN
 from keras_models.mlp import MLP
 from benchmarks import benchmark
 
