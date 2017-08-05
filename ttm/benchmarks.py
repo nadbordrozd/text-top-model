@@ -6,25 +6,6 @@ from sklearn.cross_validation import train_test_split
 from prepare_data import prepare_dataset, cache
 
 
-def set_metadata(model, vocab, class_count):
-    vocab_size = len(vocab)
-
-    try:
-        model.set_vocab(vocab)
-    except AttributeError:
-        pass
-
-    try:
-        model.set_vocab_size(vocab_size)
-    except AttributeError:
-        pass
-
-    try:
-        model.set_class_count(class_count)
-    except AttributeError:
-        pass
-
-
 @cache
 def benchmark(model_class, data_path, model_params=None, iters=1):
     """benchmarks a given model on a given dataset
@@ -41,13 +22,15 @@ def benchmark(model_class, data_path, model_params=None, iters=1):
 
     X, y, vocab, label_encoder = prepare_dataset(data_path)
     class_count = len(label_encoder.classes_)
+    model_params['vocab_size'] = len(vocab)
+    model_params['vocab'] = vocab
+    model_params['class_count'] = class_count
 
     scores = []
     times = []
     for i in range(iters):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=i)
         model = model_class(**model_params)
-        set_metadata(model, vocab, class_count)
         start = time()
         preds = model.fit(X_train, y_train).predict(X_test)
         end = time()
@@ -68,13 +51,15 @@ def benchmark_with_early_stopping(model_class, data_path, model_params=None):
     """
     if model_params is None:
         model_params = {}
-    model = model_class(**model_params)
+
     X, y, vocab, label_encoder = prepare_dataset(data_path)
     class_count = len(label_encoder.classes_)
+    model_params['vocab_size'] = len(vocab)
+    model_params['vocab'] = vocab
+    model_params['class_count'] = class_count
+    model = model_class(**model_params)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
-
-    set_metadata(model, vocab, class_count)
 
     model.fit(X_train, y_train, validation_data=[X_test, y_test])
     best_loss = np.min(model.history.history['val_loss'])

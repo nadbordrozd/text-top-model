@@ -18,6 +18,9 @@ class LSTMClassifier(KerasTextClassifier):
             units=128,
             dropout_rate=0.2,
             rec_dropout_rate=0.2,
+            vocab=None,
+            vocab_size=None,
+            class_count=None
     ):
         super(LSTMClassifier, self).__init__(
             max_seq_len,
@@ -25,7 +28,10 @@ class LSTMClassifier(KerasTextClassifier):
             embeddings_path,
             optimizer,
             batch_size,
-            epochs)
+            epochs,
+            vocab,
+            vocab_size,
+            class_count)
 
         self.params['layers'] = layers
         self.params['units'] = units
@@ -47,5 +53,5 @@ class LSTMClassifier(KerasTextClassifier):
                 x = Bidirectional(layer)(x)
             else:
                 x = layer(x)
-        preds = Dense(self.num_classes, activation='softmax')(x)
+        preds = Dense(self.class_count, activation='softmax')(x)
         return preds

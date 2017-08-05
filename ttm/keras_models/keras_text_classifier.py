@@ -19,12 +19,15 @@ class KerasTextClassifier(object):
             embeddings_path=None,
             optimizer='adam',
             batch_size=32,
-            epochs=10):
+            epochs=10,
+            vocab=None,
+            vocab_size=None,
+            class_count=None,
+            **kwargs):
 
-        self.model = None
-        self.vocab_size = None
-        self.vocab = None
-        self.num_classes = None
+        self.vocab_size = vocab_size
+        self.vocab = vocab
+        self.class_count = class_count
         self.embedding_dim = embedding_dim
         self.max_seq_len = max_seq_len
         self.embeddings_path = embeddings_path
@@ -35,6 +38,7 @@ class KerasTextClassifier(object):
         self.batch_size = batch_size
         self.patience = 3
         self.history = None
+        self.model = None
 
         self.params = {
             'epochs': self.epochs,
@@ -42,15 +46,11 @@ class KerasTextClassifier(object):
             'embedding_dim': self.embedding_dim,
             'embeddings_path': self.embeddings_path,
             'optimizer': self.optimizer,
-            'batch_size': self.batch_size
+            'batch_size': self.batch_size,
+            'vocab': self.vocab,
+            'vocab_size': self.vocab_size,
+            'class_count': self.class_count
         }
-
-    def set_vocab(self, vocab):
-        self.vocab = vocab
-        self.vocab_size = len(vocab)
-
-    def set_class_count(self, n):
-        self.num_classes = n
 
     def build_embedding_layer(self):
         if self.embeddings_path is None:
@@ -72,7 +72,7 @@ class KerasTextClassifier(object):
         return embedding_layer
 
     def validate_params(self):
-        if self.vocab_size is None or self.num_classes is None:
+        if self.vocab_size is None or self.class_count is None:
             raise ValueError(
                 "Must set vocab size and class count before training")
 
@@ -83,7 +83,7 @@ class KerasTextClassifier(object):
         PLS OVERRIDE ME!
         """
         x = Flatten()(embedded_sequences)
-        preds = Dense(self.num_classes, activation='softmax')(x)
+        preds = Dense(self.class_count, activation='softmax')(x)
         return preds
 
     def build_model(self):
@@ -102,12 +102,12 @@ class KerasTextClassifier(object):
                       metrics=['acc'])
 
         padded_X = pad_sequences(X, self.max_seq_len)
-        one_hot_y = to_categorical(y, num_classes=self.num_classes)
+        one_hot_y = to_categorical(y, num_classes=self.class_count)
 
         if validation_data is not None:
             v_X, v_y = validation_data
             v_X = pad_sequences(v_X, self.max_seq_len)
-            v_y = to_categorical(v_y, self.num_classes)
+            v_y = to_categorical(v_y, self.class_count)
 
             early_stopping = EarlyStopping(
                 monitor='val_loss', patience=self.patience)
@@ -133,11 +133,14 @@ class KerasTextClassifier(object):
     def predict(self, X):
         return self.predict_proba(X).argmax(axis=1)
 
-    def get_params(self):
+    def get_params(self, deep=None):
         return self.params
 
     def __str__(self):
         class_name = str(self.__class__).split('.')[-1][:-2]
-        param_string = ", ".join('%s=%s' % (k, v)
-                                 for k, v in self.get_params().items())
+        param_string = ", ".join(
+            '%s=%s' % (k, v)
+            for k, v in self.get_params().items()
+            if k not in ['vocab', 'vocab_size', 'class_count']
+        )
         return "%s(%s)" % (class_name, param_string)

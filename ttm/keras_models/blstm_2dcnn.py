@@ -17,7 +17,10 @@ class BLSTM2DCNN(KerasTextClassifier):
             units=128,
             dropout_rate=0.2,
             rec_dropout_rate=0.2,
-            conv_filters=32
+            conv_filters=32,
+            vocab_size=None,
+            vocab=None,
+            class_count=None
     ):
         super(BLSTM2DCNN, self).__init__(
             max_seq_len,
@@ -25,7 +28,10 @@ class BLSTM2DCNN(KerasTextClassifier):
             embeddings_path,
             optimizer,
             batch_size,
-            epochs)
+            epochs,
+            vocab_size,
+            vocab,
+            class_count)
 
         self.params['units'] = units
         self.params['dropout_rate'] = dropout_rate
@@ -44,5 +50,5 @@ class BLSTM2DCNN(KerasTextClassifier):
         x = Conv2D(self.params['conv_filters'], (3, 3))(x)
         x = MaxPool2D(pool_size=(2, 2))(x)
         x = Flatten()(x)
-        preds = Dense(self.num_classes, activation='softmax')(x)
+        preds = Dense(self.class_count, activation='softmax')(x)
         return preds

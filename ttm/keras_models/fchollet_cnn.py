@@ -18,14 +18,20 @@ class FCholletCNN(KerasTextClassifier):
             batch_size=32,
             epochs=10,
             units=128,
-            dropout_rate=0):
+            dropout_rate=0,
+            vocab_size=None,
+            vocab=None,
+            class_count=None):
         super(FCholletCNN, self).__init__(
             max_seq_len,
             embedding_dim,
             embeddings_path,
             optimizer,
             batch_size,
-            epochs)
+            epochs,
+            vocab,
+            vocab_size,
+            class_count)
 
         self.units = units
         self.dropout_rate = dropout_rate
@@ -47,5 +53,5 @@ class FCholletCNN(KerasTextClassifier):
             x = Dropout(self.dropout_rate)(x)
         x = Flatten()(x)
         x = Dense(self.units, activation='relu')(x)
-        preds = Dense(self.num_classes, activation='softmax')(x)
+        preds = Dense(self.class_count, activation='softmax')(x)
         return preds

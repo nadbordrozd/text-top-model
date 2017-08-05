@@ -39,19 +39,19 @@ class SklearnClassifierWrapper(object):
 
 
 class MultNB(SklearnClassifierWrapper):
-    def __init__(self, tfidf=False, ngram_n=1):
+    def __init__(self, tfidf=False, ngram_n=1, **kwargs):
         super(MultNB, self).__init__(MultinomialNB(), tfidf, ngram_n)
         self.name = "MultinomialNB(tfidf=%s, ngram_n=%s)" % (tfidf, ngram_n)
 
 
 class BernNB(SklearnClassifierWrapper):
-    def __init__(self, tfidf=False, ngram_n=1):
+    def __init__(self, tfidf=False, ngram_n=1, **kwargs):
         super(BernNB, self).__init__(BernoulliNB(), tfidf, ngram_n)
         self.name = "BernoulliNB(tfidf=%s, ngram_n=%s)" % (tfidf, ngram_n)
 
 
 class SVM(SklearnClassifierWrapper):
-    def __init__(self, tfidf=False, ngram_n=1, kernel='linear', probability=False):
+    def __init__(self, tfidf=False, ngram_n=1, kernel='linear', probability=False, **kwargs):
         super(SVM, self).__init__(SVC(kernel=kernel, probability=probability), tfidf, ngram_n)
         self.name = "SVC(tfidf=%s, ngram_n=%s, kernel=%s)" % (tfidf, ngram_n, kernel)
         self.params['kernel'] = kernel

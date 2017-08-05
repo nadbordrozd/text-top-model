@@ -22,14 +22,20 @@ class YKimCNN(KerasTextClassifier):
             units=64,
             dropout_rates=(0.5, 0.8),
             filter_sizes=(3, 8),
-            num_filters=10):
+            num_filters=10,
+            vocab_size=None,
+            vocab=None,
+            class_count=None):
         super(YKimCNN, self).__init__(
             max_seq_len,
             embedding_dim,
             embeddings_path,
             optimizer,
             batch_size,
-            epochs)
+            epochs,
+            vocab_size,
+            vocab,
+            class_count)
 
         self.params['units'] = units
         self.params['dropout_rates'] = dropout_rates
@@ -59,5 +65,5 @@ class YKimCNN(KerasTextClassifier):
 
         z = Dropout(drop_2)(z)
         z = Dense(self.units, activation="relu")(z)
-        model_output = Dense(self.num_classes, activation="softmax")(z)
+        model_output = Dense(self.class_count, activation="softmax")(z)
         return model_output
