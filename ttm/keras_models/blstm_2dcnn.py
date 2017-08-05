@@ -29,8 +29,8 @@ class BLSTM2DCNN(KerasTextClassifier):
             optimizer,
             batch_size,
             epochs,
-            vocab_size,
             vocab,
+            vocab_size,
             class_count)
 
         self.params['units'] = units
