@@ -2,7 +2,6 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.naive_bayes import BernoulliNB, MultinomialNB
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
-from xgboost import XGBClassifier
 
 
 class SklearnClassifierWrapper(object):
@@ -18,6 +17,7 @@ class SklearnClassifierWrapper(object):
                 tokenizer=lambda x: x,
                 ngram_range=(1, ngram_n))
 
+        self.params = {'tfidf':tfidf, 'ngram_n': ngram_n}
         self.clf = Pipeline([('vectorizer', vectorizer), ('model', model)])
         self.name = "SklearnClassifierWrapper(tfidf=%s)" % tfidf
 
@@ -30,6 +30,9 @@ class SklearnClassifierWrapper(object):
 
     def predict(self, X):
         return self.clf.predict(X)
+
+    def get_params(self, deep=None):
+        return self.params
 
     def __str__(self):
         return self.name
@@ -48,12 +51,8 @@ class BernNB(SklearnClassifierWrapper):
 
 
 class SVM(SklearnClassifierWrapper):
-    def __init__(self, tfidf=False, ngram_n=1, kernel='linear'):
-        super(SVM, self).__init__(SVC(kernel=kernel), tfidf, ngram_n)
+    def __init__(self, tfidf=False, ngram_n=1, kernel='linear', probability=False):
+        super(SVM, self).__init__(SVC(kernel=kernel, probability=probability), tfidf, ngram_n)
         self.name = "SVC(tfidf=%s, ngram_n=%s, kernel=%s)" % (tfidf, ngram_n, kernel)
-
-
-class XGB(SklearnClassifierWrapper):
-    def __init__(self, tfidf=False, ngram_n=1):
-        super(XGB, self).__init__(XGBClassifier(), tfidf, ngram_n)
-        self.name = "XGBClassifier(tfidf=%s, ngram_n=%s)" % (tfidf, ngram_n)
+        self.params['kernel'] = kernel
+        self.params['probability'] = probability
