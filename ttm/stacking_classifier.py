@@ -1,5 +1,12 @@
 import numpy as np
+from prepare_data import cache
 from sklearn.model_selection import cross_val_predict
+
+
+@cache
+def cached_cv_predict(clf_class, params, X, y, cv, method):
+    clf = clf_class(**params)
+    return cross_val_predict(clf, X, y, cv=cv, method=method)
 
 
 class StackingTextClassifier(object):
@@ -20,8 +27,10 @@ class StackingTextClassifier(object):
     def fit(self, X, y):
         n = len(y)
         method = 'predict_proba' if self.use_proba else 'predict'
-        base_preds = [cross_val_predict(clf, X, y, cv=self.folds, method=method)
-                      for clf in self.base_classifiers]
+        base_preds = [cached_cv_predict(
+            clf.__class__, clf.get_params(), X, y, cv=self.folds, method=method)
+            for clf in self.base_classifiers]
+
         if not self.use_proba:
             base_preds = [x.reshape(n, 1) for x in base_preds]
 

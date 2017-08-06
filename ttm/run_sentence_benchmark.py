@@ -1,7 +1,10 @@
 import numpy as np
 import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from xgboost import XGBClassifier
 
-from sklearn_models import MultNB, BernNB, SVM
+from sklearn_models import MultNB, SVM
+from stacking_classifier import StackingTextClassifier
 from keras_models.blstm_2dcnn import BLSTM2DCNN
 from keras_models.lstm import LSTMClassifier
 from keras_models.ykim_cnn import YKimCNN
@@ -106,15 +109,36 @@ models = [
     (MultNB, {'tfidf': True}),
     (MultNB, {'tfidf': True, 'ngram_n': 2}),
     (MultNB, {'tfidf': True, 'ngram_n': 3}),
-    (BernNB, {'tfidf': True}),
     (MultNB, {'tfidf': False}),
     (MultNB, {'tfidf': False, 'ngram_n': 2}),
-    (BernNB, {'tfidf': False}),
     (SVM, {'tfidf': True, 'kernel': 'linear'}),
     (SVM, {'tfidf': True, 'kernel': 'linear', 'ngram_n': 2}),
-    (SVM, {'tfidf': False, 'kernel': 'linear'}),
-    (SVM, {'tfidf': False, 'kernel': 'linear', 'ngram_n': 2})
+    (SVM, {'tfidf': False, 'kernel': 'linear'})
 ]
+
+
+logreg_stacker = (StackingTextClassifier, {
+    'stacker': (LogisticRegression, {}),
+    'base_classifiers': [
+        (m, params)
+        for m, params in models[:-3]
+    ] + [
+        (m, dict(params.items() + [('probability', True)]))
+        for m, params in models[-3:]
+    ],
+    'use_proba': True,
+    'folds': 5
+})
+
+xgb_stacker = (StackingTextClassifier, {
+    'stacker': (XGBClassifier, {}),
+    'base_classifiers': [m for m in models],
+    'use_proba': False,
+    'folds': 5
+})
+
+models.append(logreg_stacker)
+models.append(xgb_stacker)
 
 results_path = 'sentence_results.csv'
 
@@ -122,12 +146,12 @@ if __name__ == '__main__':
     records = []
     for data_path in datasets:
         print
-        print data_path
+        print "rrrddd", data_path
 
         for model_class, params in models:
-            scores, times = benchmark(model_class, data_path, params, 1)
+            scores, times = benchmark(model_class, data_path, params, 5)
             model_str = str(model_class(**params))
-            print '%.3f' % np.mean(scores), model_str
+            print 'rrr %.3f' % np.mean(scores), model_str
             for score, time in zip(scores, times):
                 records.append({
                     'model': model_str,
