@@ -1,6 +1,6 @@
 import numpy as np
 from prepare_data import cache
-from sklearn.cross_validation import cross_val_predict
+from sklearn.model_selection import cross_val_predict
 
 
 @cache
