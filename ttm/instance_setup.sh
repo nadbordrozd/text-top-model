@@ -20,3 +20,9 @@ python prepare_polarity_dataset.py
 python prepare_subjectivity_dataset.py
 
 sudo apt-get install unzip
+
+
+sudo apt-get install zsh
+sudo chsh -s /bin/zsh ubuntu
+echo "export PATH=/usr/local/cuda/bin:$PATH" > ~/.zshrc
+wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
