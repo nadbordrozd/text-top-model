@@ -1,6 +1,10 @@
 import numpy as np
 import json
+from sklearn.linear_model import LogisticRegression
+from xgboost import XGBClassifier
 
+
+from stacking_classifier import StackingTextClassifier
 from sklearn_models import MultNB, BernNB, SVM
 from keras_models.fchollet_cnn import FCholletCNN
 from keras_models.mlp import MLP
@@ -10,15 +14,6 @@ datasets = [
     '../data/r8-all-terms.txt',
     '../data/r52-all-terms.txt',
     '../data/20ng-all-terms.txt',
-    '../data/r8-no-short.txt',
-    '../data/r52-no-short.txt',
-    '../data/20ng-no-short.txt',
-    '../data/r8-no-stop.txt',
-    '../data/r52-no-stop.txt',
-    '../data/20ng-no-stop.txt',
-    '../data/r8-stemmed.txt',
-    '../data/r52-stemmed.txt',
-    '../data/20ng-stemmed.txt',
     '../data/webkb-stemmed.txt'
 ]
 
@@ -41,6 +36,29 @@ models = [
     (SVM, {'tfidf': False, 'kernel': 'linear'}),
     (SVM, {'tfidf': False, 'kernel': 'linear', 'ngram_n': 2})
 ]
+
+logreg_stacker = (StackingTextClassifier, {
+    'stacker': (LogisticRegression, {}),
+    'base_classifiers': [
+        (m, params)
+        for m, params in models[:-3]
+    ] + [
+        (m, dict(params.items() + [('probability', True)]))
+        for m, params in models[-3:]
+    ],
+    'use_proba': True,
+    'folds': 5
+})
+
+xgb_stacker = (StackingTextClassifier, {
+    'stacker': (XGBClassifier, {}),
+    'base_classifiers': [m for m in models],
+    'use_proba': False,
+    'folds': 5
+})
+
+models.append(logreg_stacker)
+models.append(xgb_stacker)
 
 results_path = 'results.json'
 
