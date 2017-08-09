@@ -41,10 +41,10 @@ logreg_stacker = (StackingTextClassifier, {
     'stacker': (LogisticRegression, {}),
     'base_classifiers': [
         (m, params)
-        for m, params in models[:-3]
+        for m, params in models[:-4]
     ] + [
         (m, dict(params.items() + [('probability', True)]))
-        for m, params in models[-3:]
+        for m, params in models[-4:]
     ],
     'use_proba': True,
     'folds': 5
