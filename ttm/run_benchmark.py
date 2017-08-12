@@ -1,10 +1,6 @@
 import numpy as np
-import json
-from sklearn.linear_model import LogisticRegression
-from xgboost import XGBClassifier
+import pandas as pd
 
-
-from stacking_classifier import StackingTextClassifier
 from sklearn_models import MultNB, BernNB, SVM
 from keras_models.fchollet_cnn import FCholletCNN
 from keras_models.mlp import MLP
@@ -37,30 +33,8 @@ models = [
     (SVM, {'tfidf': False, 'kernel': 'linear', 'ngram_n': 2})
 ]
 
-logreg_stacker = (StackingTextClassifier, {
-    'stacker': (LogisticRegression, {}),
-    'base_classifiers': [
-        (m, params)
-        for m, params in models[:-4]
-    ] + [
-        (m, dict(params.items() + [('probability', True)]))
-        for m, params in models[-4:]
-    ],
-    'use_proba': True,
-    'folds': 5
-})
 
-xgb_stacker = (StackingTextClassifier, {
-    'stacker': (XGBClassifier, {}),
-    'base_classifiers': [m for m in models],
-    'use_proba': False,
-    'folds': 5
-})
-
-models.append(logreg_stacker)
-models.append(xgb_stacker)
-
-results_path = 'results.json'
+results_path = 'big_results.csv'
 
 if __name__ == '__main__':
     records = []
@@ -80,6 +54,4 @@ if __name__ == '__main__':
                     'time': time
                 })
 
-    with open(results_path, 'wb') as f:
-        for r in records:
-            f.write(json.dumps(r) + '\n')
+    pd.DataFrame(records).to_csv(results_path, index=False)
