@@ -34,7 +34,7 @@ models = [
 ]
 
 
-results_path = 'big_results.csv'
+results_path = 'document_results.csv'
 
 if __name__ == '__main__':
     records = []
