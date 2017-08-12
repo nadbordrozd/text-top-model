@@ -60,6 +60,8 @@ The models currently included in the benchmarks are sklearn's `SVM`, `BernoulliN
 
 The neural models included are: a multi-layer perceptron `MLP`, two different types of convolutional nets `FCholletCNN`, `YKimCNN`, a recurrent network LSTM/BLSTM `LSTM`, and a combination of a recurrent and convolutional net `BLSTM2DCNN`. See the classes in `ttm/keras_models` for links to papers. All the models are parametrised with the number of layers, number of units per layer, dropout rates etc. 
  
+Finally, `ttm/stacking_classifier` has an implementation of stacking to combine multiple models.
+
 ### Results
 A sample of results:
 ```
