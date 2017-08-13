@@ -63,7 +63,7 @@ The neural models included are: a multi-layer perceptron `MLP`, two different ty
 Finally, `ttm/stacking_classifier` has an implementation of stacking to combine multiple models.
 
 ### Results
-A sample of results:
+A sample of results for document classification:
 ```
 model            r8-all-terms.txt    r52-all-terms.txt    20ng-all-terms.txt    webkb-stemmed.txt
 -------------  ------------------  -------------------  --------------------  -------------------
@@ -84,4 +84,30 @@ MNB tfidf bi                0.807                0.685                 0.855    
 BNB                         0.774                0.649                 0.705                0.741
 BNB tfidf                   0.774                0.649                 0.705                0.741
 ```
-For full results, see `ttm/document_results.csv`. For plots see `ttm/evil_plotting.ipynb`.
+and for sentence classification:
+```
+model               subjectivity_10k.txt    polarity.txt
+----------------  ----------------------  --------------
+Stacker LogReg                     0.935           0.807
+Stacker XGB                        0.932           0.793
+MNB 2-gr                           0.921           0.782
+MNB tfidf 2-gr                     0.917           0.785
+MNB tfidf 3-gr                     0.916           0.781
+MNB tfidf                          0.919           0.777
+MNB                                0.918           0.772
+LSTM GloVe                         0.921           0.765
+BLSTM Glove                        0.917           0.766
+SVM tfidf 2-gr                     0.911           0.772
+MLP 1x360                          0.910           0.769
+MLP 2x180                          0.907           0.766
+MLP 3x512                          0.907           0.761
+SVM tfidf                          0.905           0.763
+BLSTM2DCNN GloVe                   0.894           0.746
+CNN GloVe                          0.901           0.734
+SVM                                0.887           0.743
+LSTM 12D                           0.891           0.734
+CNN 45D                            0.893           0.682
+LSTM 24D                           0.869           0.703
+BLSTM2dCNN 15D                     0.867           0.656
+```
+For full results, see `ttm/document_results.csv` and `ttm/sentence_results.csv`. For plots see `ttm/evil_plotting.ipynb`.
