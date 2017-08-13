@@ -122,10 +122,10 @@ logreg_stacker = (StackingTextClassifier, {
     'stacker': (LogisticRegression, {}),
     'base_classifiers': [
         (m, params)
-        for m, params in models[:-3]
+        for m, params, _ in models[:-3]
     ] + [
         (m, dict(params.items() + [('probability', True)]))
-        for m, params in models[-3:]
+        for m, params, _ in models[-3:]
     ],
     'use_proba': True,
     'folds': 5
@@ -133,7 +133,7 @@ logreg_stacker = (StackingTextClassifier, {
 
 xgb_stacker = (StackingTextClassifier, {
     'stacker': (XGBClassifier, {}),
-    'base_classifiers': [m for m in models],
+    'base_classifiers': [(m, p) for m, p, _ in models],
     'use_proba': False,
     'folds': 5
 }, "Stacker XGB")
