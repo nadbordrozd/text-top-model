@@ -42,7 +42,7 @@ models = [
         'epochs': 60,
         'bidirectional': False,
         'units': 80
-    }, "BLSTM 12D"),
+    }, "LSTM 12D"),
     (LSTMClassifier, {
         'max_seq_len': 50,
         'layers': 2,
