@@ -39,18 +39,18 @@ class FCholletCNN(TFlearnTextClassifier):
         self.params['dropout_rate'] = 1-dropout_rate
 
     def transform_embedded_sequences(self, embedded_sequences):
-        x = conv_1d(embedded_sequences, self.filters, 5, 1, activation='relu', padding="valid")
-        x = max_pool_1d(x, 5, padding="valid")
+        net = conv_1d(embedded_sequences, self.filters, 5, 1, activation='relu', padding="valid")
+        net = max_pool_1d(net, 5, padding="valid")
         if self.dropout_rate > 0:
-            x = dropout(x, self.dropout_rate)
-        x = conv_1d(x, self.filters, 5, activation='relu', padding="valid")
-        x = max_pool_1d(x, 5, padding="valid")
+            net = dropout(net, self.dropout_rate)
+        net = conv_1d(net, self.filters, 5, activation='relu', padding="valid")
+        net = max_pool_1d(net, 5, padding="valid")
         if self.dropout_rate > 0:
-            x = dropout(x, self.dropout_rate)
-        x = conv_1d(x, self.filters, 5, activation='relu', padding="valid")
-        x = max_pool_1d(x, 35)
+            net = dropout(net, self.dropout_rate)
+        net = conv_1d(net, self.filters, 5, activation='relu', padding="valid")
+        net = max_pool_1d(net, 35)
         if self.dropout_rate > 0:
-            x = dropout(x, self.dropout_rate)
-        x = fully_connected(x, self.filters, activation='relu')
-        preds = fully_connected(x, self.class_count, activation='softmax')
+            net = dropout(net, self.dropout_rate)
+        net = fully_connected(net, self.filters, activation='relu')
+        preds = fully_connected(net, self.class_count, activation='softmax')
         return preds
