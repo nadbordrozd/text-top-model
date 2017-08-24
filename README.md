@@ -111,3 +111,5 @@ LSTM 24D                           0.869           0.703
 BLSTM2dCNN 15D                     0.867           0.656
 ```
 For full results, see `ttm/document_results.csv` and `ttm/sentence_results.csv`. For plots see `ttm/evil_plotting.ipynb`.
+
+**NOTE**: we have added a `ttm/tflearn_models` directory. At this stage, this is included *only* for exploration purposes. However, the code there is relatively clean and usable, following the exact same structure than that of the `keras_model` directory.
