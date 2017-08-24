@@ -152,7 +152,7 @@ class TFlearnTextClassifier(object):
                 padded_X, one_hot_y,
                 n_epoch=self.epochs,
                 batch_size=self.batch_size,
-                validation_data=(v_X, v_y),
+                validation_set=(v_X, v_y),
                 show_metric=True,
                 callbacks=early_stopping)
 
